@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import cors from "cors";
 import cookieParser from 'cookie-parser';
+import authRouter from './routes/auth.routes.js';
 
 const app = express();
 
@@ -26,8 +27,24 @@ app.use(cookieParser());
 
 app.get('/', (req, res) => {
   logger.info('Hello fro Acquisition!'); // using winston logger package
-
   res.status(200).send('Hello from Acquisition!');
 });
+
+// health check
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+app.get("/api", (req, res) => {
+  res.status(200).json({
+    message: "Acquisition api is running..."
+  });
+});
+
+app.use("/api/auth", authRouter);
 
 export default app;
