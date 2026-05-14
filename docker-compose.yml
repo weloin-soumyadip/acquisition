@@ -2,7 +2,7 @@ services:
   neon-local:
     image: neondatabase/neon_local:latest
     env_file:
-      - .env.development
+      - .env
     environment:
       DELETE_BRANCH: ${DELETE_BRANCH:-true}
     ports:
@@ -13,7 +13,7 @@ services:
       context: .
       target: development
     env_file:
-      - .env.development
+      - .env
     environment:
       NODE_ENV: development
       NEON_USE_LOCAL: 'true'
