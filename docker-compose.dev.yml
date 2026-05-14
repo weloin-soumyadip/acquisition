@@ -1,0 +1,29 @@
+services:
+  neon-local:
+    image: neondatabase/neon_local:latest
+    env_file:
+      - .env.development
+    environment:
+      DELETE_BRANCH: ${DELETE_BRANCH:-true}
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+  app:
+    build:
+      context: .
+      target: development
+    env_file:
+      - .env.development
+    environment:
+      NODE_ENV: development
+      NEON_USE_LOCAL: 'true'
+      NEON_LOCAL_PROXY_URL: http://neon-local:5432/sql
+    depends_on:
+      - neon-local
+    ports:
+      - '${PORT:-3000}:3000'
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: npm run dev
+    restart: unless-stopped

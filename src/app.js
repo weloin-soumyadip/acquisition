@@ -25,15 +25,15 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(securityMiddleware);
+// app.use(securityMiddleware);
 
-app.get('/', (req, res) => {
+app.get('/', securityMiddleware, (req, res) => {
   logger.info('Hello fro Acquisition!'); // using winston logger package
   res.status(200).send('Hello from Acquisition!');
 });
 
 // health check
-app.get("/health", (req, res) => {
+app.get("/health", securityMiddleware, (req, res) => {
   res.status(200).json({
     status: "ok",
     timestamp: new Date().toISOString(),
@@ -41,12 +41,13 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.get("/api", (req, res) => {
+app.get("/api", securityMiddleware, (req, res) => {
   res.status(200).json({
     message: "Acquisition api is running..."
   });
 });
 
 app.use("/api/auth", authRouter);
+// app.use("/api", securityMiddleware);
 
 export default app;
